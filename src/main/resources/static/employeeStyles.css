@@ -1,0 +1,32 @@
+/* css/employeeStyles.css */
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+}
+
+h1 {
+  color: #333;
+}
+
+.employee-details {
+  border: 1px solid #ccc;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.employee-details p {
+  margin: 5px 0;
+}
+
+.employee-photo img {
+  max-width: 200px;
+  max-height: 200px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.no-photo p {
+  font-style: italic;
+  color: #999;
+}

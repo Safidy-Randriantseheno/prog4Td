@@ -2,59 +2,122 @@
 <html>
 <head>
     <meta charset = "ISO-8859-1" />
-    <link href = "css/styles.css" rel = "stylesheet"/>
-    <title>Employee Management</title>
+    <link th:href="@{/styles/index.css}" rel = "stylesheet"/>
+    <title>Employees</title>
 </head>
 <body>
-<h2>Add Employee</h2>
-<form th:action="@{/employee}" th:object="${employee}" method="post" enctype="multipart/form-data">
+<div class="mainBody">
+    <div class="con2">
+        <div class="container">
+            <img th:src="@{'/index/employee'}" alt="Aucune image" class="Img">
+        </div>
 
-    <label for="image">Image:</label>
-    <input type="file" id="image" name="image"><br>
+        <h4 th:text="${enterprise.name}"></h4>
+    </div>
+    <div class="firstPart">
+        <a class="goCreate"  th:href="@{/enterprise}">Update Enterprise</a>
+        <a class="goCreate" th:href="@{/index/exportCsv}" download="employees.csv">Export as CSV</a>
+        <a class="goCreate"  th:href="@{/form}">Create an employee</a>
+    </div>
+    <form th:action="@{/index}" method="get">
+        <label th:text="FirstName" for="name"/>
+        <input type="text" id="name" name="name" class="search"/>
 
-    <label for="firstName">First Name:</label>
-    <input type="text" id="firstName" name="firstName" th:field="*{firstName}" required><br>
+        <label th:text="LastName"/>
+        <input type="text" name="lastName" class="search"/>
 
-    <label for="lastName">Last Name:</label>
-    <input type="text" id="lastName" name="lastName" th:field="*{lastName}" required><br>
+        <label for="sex">Choose a gender :</label>
+        <select id="sex" name="gender">
+            <option value="">All</option>
+            <option value="M">Male</option>
+            <option value="F">Female</option>
+        </select>
 
-    <label for="birthDate">Birth Date:</label>
-    <input type="date" id="birthDate" name="birthDate" th:field="*{birthDate}" required><br>
+        <label th:text="Role"/>
+        <input type="text" name="role" class="search"/>
 
+        <label th:text="CountryCode"/>
+        <input type="text" name="cCode" class="search"/>
 
+        <label th:text="EmployementDate"/>
+        <input type="date" name="employementDate" class="search"/>
 
-    <button type="submit" value="Save">Add Employee</button>
-</form>
+        <label th:text="DepartureDate"/>
+        <input type="date" name="departureDate" class="search"/>
 
-<h2>Employees</h2>
-<table>
-    <thead>
-    <tr>
-        <th>First Name</th>
-        <th>Last Name</th>
-        <th>Ref</th>
-        <th>Birth Date</th>
-        <th>passport photo</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="employee : ${employees}">
-        <td th:text="${employee.firstName}"></td>
-        <td th:text="${employee.lastName}"></td>
-        <td th:text="${employee.ref}"></td>
-        <td th:text="${employee.birthDate}"></td>
-        <td th:if="${not #strings.isEmpty(employee.imageEncoded)}">
-            <img th:src="'data:image/png;base64,' + ${employee.imageEncoded}" alt="Employee image">
-        </td>
-        <td th:unless="${not #strings.isEmpty(employee.imageEncoded)}">
-            <img th:src="@{/images/default-image.png}" alt="Default Image">
-            <p>Aucune image</p>
-        </td>
-        <td>
-            <a th:href="@{/employee/{id}(id=${employee.id})}">View</a>
-        </td>
-    </tr>
-    </tbody>
-</table>
+        <button type="submit" class="btnSearch">Filter</button>
+    </form>
+    <div class="contain">
+    <table>
+        <thead>
+        <tr>
+            <th class="coluning">
+                <a th:href="@{|/index?sort=firstNameAsc|}" th:text="FirstNameAsc" class="goSort"></a>
+                <a th:href="@{|/index?sort=firstNameDesc|}" th:text="FirstNameDesc" class="goSort"></a>
+            </th>
+            <th>
+                <a th:href="@{|/index?sort=lastNameAsc|}" th:text="lastNameAsc" class="goSort"></a>
+                <a th:href="@{|/index?sort=lastNameDesc|}" th:text="lastNameDesc" class="goSort"></a>
+            </th>
+            <th>Birth Date</th>
+            <th>Matricule</th>
+            <th class="coluning">
+                <a th:href="@{|/index?sort=genderAsc|}" th:text="GenderAsc" class="goSort"></a>
+                <a th:href="@{|/index?sort=genderDesc|}" th:text="GenderDesc" class="goSort"></a>
+            </th>
+            <th>Csp</th>
+            <th>Address</th>
+            <th>Email Professionel</th>
+            <th>Email Personnel</th>
+            <th class="coluning">
+                <a th:href="@{|/index?sort=roleAsc|}" th:text="roleAsc" class="goSort"></a>
+                <a th:href="@{|/index?sort=roleDesc|}" th:text="roleDesc" class="goSort"></a>
+            </th>
+            <th>Nombre d'Enfants</th>
+            <th>
+                <a th:href="@{|/index?sort=dDateAsc|}" th:text="dDateAsc" class="goSort"></a>
+                <a th:href="@{|/index?sort=dDateDesc|}" th:text="dDateDesc" class="goSort"></a>
+            </th>
+            <th class="coluning">
+                <a th:href="@{|/index?sort=eDateAsc|}" th:text="eDateAsc" class="goSort"></a>
+                <a th:href="@{|/index?sort=eDateDesc|}" th:text="eDateDesc" class="goSort"></a>
+            </th>
+            <th>Cnaps</th>
+            <th>Phone Number</th>
+            <th>CIN</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr th:each="employee: ${employees}">
+                <td th:text="${employee.firstName}" />
+                <td th:text="${employee.lastName}" />
+                <td th:text="${employee.birthDate}" />
+                <td th:text="${employee.matricule}" />
+                <td th:text="${employee.sex}" />
+                <td th:text="${employee.csp}" />
+                <td th:text="${employee.address}" />
+                <td th:text="${employee.emailPro}" />
+                <td th:text="${employee.emailPerso}" />
+                <td th:text="${employee.role}" />
+                <td th:text="${employee.child}" />
+                <td th:text="${employee.employementDate}" />
+                <td th:text="${employee.departureDate}" />
+                <td th:text="${employee.cnaps}" />
+                <td>
+                    <ul>
+                        <li th:each="test : ${employee.phones}" th:text="${test.phoneNumber}"></li>
+                    </ul>
+                </td>
+                <td th:text="${employee.cin}" />
+                <td>
+                    <a th:href="@{/formEmployee/{matricule}(matricule=${employee.matricule})}" class="cheking">Voire</a>
+
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    </div>
+</div>
 </body>
 </html>
