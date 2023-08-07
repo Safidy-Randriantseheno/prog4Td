@@ -84,7 +84,7 @@ table tr th {
     width: 90%;
 }
 .goSort:hover{
-
+    background-color: #2e9efa;
     border-color: #0056b3;
 }
 form {
@@ -95,7 +95,7 @@ form {
     align-items: center;
 }
 .search {
-
+    background-color: #f2f2f2;
     border: 1px solid #ccc;
     margin: 20px 0;
     padding: 8px;
@@ -111,7 +111,7 @@ label {
     display: block;
 }
 .btnSearch{
-    background-color: #00FF00;
+    background-color: #e67e22;
     color: #eeeeee;
     border:none;
     cursor: pointer;
@@ -119,7 +119,7 @@ label {
     font-size: 16px;
 }
 .cheking{
-    background-color: #A52A2A;
+    background-color: #22d6e6;
     color: #ffffff;
     text-align: center;
     text-decoration: none;
@@ -129,9 +129,19 @@ label {
     padding: 8px;
 }
 .cheking:hover{
-
+    background-color: #2e9efa;
 }
-
+.deleting{
+    background-color: #ee1f30;
+    color: #ffffff;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 5px;
+    border:none;
+    transition: background-color;
+    font-size: 16px;
+    padding: 8px;
+}
 .deleting:hover{
     background-color: #2e9efa;
 }
