@@ -1,6 +1,7 @@
 package com.prog4.progtd.Service;
 
 import com.prog4.progtd.Repository.PhoneRepository;
+import com.prog4.progtd.model.Country;
 import com.prog4.progtd.model.Employee;
 import com.prog4.progtd.model.Enterprise;
 import com.prog4.progtd.model.Phone;
@@ -14,13 +15,20 @@ import java.util.List;
 @AllArgsConstructor
 @Transactional
 public class PhoneService {
+
     private final PhoneRepository repository;
     private final  PhoneNumberValidationService phoneNumberValidationService;
+
+    private static final int DEFAULT_NUMBER_LENGTH = 10;
+
     public Phone getByEmployee(Employee employee){return repository.findByPhoneEmployee(employee);}
 
     public List<Phone> getAllByEmployee(Employee employee){return repository.findPhonesByPhoneEmployee(employee);}
 
     public void createPhoneNumberEmployee(String phoneNumbers, Employee employee){
+        phoneNumberValidationService.validatePhoneNumber(phoneNumbers);
+        phoneNumberValidationService.extractCountryCode(phoneNumbers);
+
         String[] numberList = phoneNumbers.split(",");
         for (String phoneNumber : numberList) {
             Phone phone = new Phone();
@@ -41,7 +49,10 @@ public class PhoneService {
         }
     }
     public void updatePhoneNumber(String phoneNumbers,Employee employee){
+        phoneNumberValidationService.validatePhoneNumber(phoneNumbers);
+        phoneNumberValidationService.extractCountryCode(phoneNumbers);
         if(phoneNumbers == "" || phoneNumbers == null){
+            //do nothing
         }else {
             String[] numberList = phoneNumbers.split(",");
             for (String phoneNumber : numberList) {
@@ -54,14 +65,17 @@ public class PhoneService {
         }
     }
     public void updatePhoneNumberEnterprise(String phoneNumbers,Enterprise enterprise){
+        phoneNumberValidationService.validatePhoneNumber(phoneNumbers);
+        phoneNumberValidationService.extractCountryCode(phoneNumbers);
         if(phoneNumbers == "" || phoneNumbers == null){
+            //do nothing
         }else {
             String[] numberList = phoneNumbers.split(",");
             for (String phoneNumber : numberList) {
                 Phone phone = new Phone();
                 phone.setPhoneEnterprise(enterprise);
                 phone.setPhoneNumber(phoneNumber);
-                phone.setCountryCode(phoneNumberValidationService.extractCountryCode(phoneNumber));
+                phone.setCountryCode(phoneNumber);
                 repository.save(phone);
             }
         }
