@@ -1,11 +1,14 @@
 package com.prog4.progtd.Controller;
 
 
+import com.prog4.progtd.Controller.mapper.EmployeeMapper;
+import com.prog4.progtd.Controller.mapper.modelView.EmployeeView;
 import com.prog4.progtd.Service.EmployeeService;
 import com.prog4.progtd.Service.EnterpriseService;
 import com.prog4.progtd.Service.PhoneService;
 import com.prog4.progtd.model.Employee;
 import com.prog4.progtd.model.Enterprise;
+import com.prog4.progtd.utils.MatriculeGenerator;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -20,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,6 +34,7 @@ public class EmployeeController extends TokenController {
     private final EmployeeService employeeService;
     private final PhoneService phoneService;
     private final EnterpriseService enterpriseService;
+    private final EmployeeMapper employeeMapper;
 
     @GetMapping("/index")
     public String index(
@@ -82,14 +87,33 @@ public class EmployeeController extends TokenController {
             @RequestParam("employementDate")@DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate eDate,
             @RequestParam("departureDate")@DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dDate,
             @RequestParam("cnaps") String cnaps,
-            @RequestParam("phoneNumbers") String phoneNumbers,
+            @RequestParam("phoneNumbers") String phoneNumber,
             @RequestParam("cinNumber") String cinNumber) throws IOException {
         byte[] fileData = file.getBytes();
-        employeeService.createEmployee(name,lastName,birthDate,sex,csp,address,emailPro,emailPerso,role,child,eDate,dDate,cnaps,cinNumber,fileData);
-        phoneService.createPhoneNumberEmployee(phoneNumbers,employeeService.getByEmailPro(emailPro));
+
+        EmployeeView employee = EmployeeView.builder()
+                .firstName(name)
+                .lastName(lastName)
+                .birthDate(birthDate)
+                .photo(fileData)
+                .gender(sex)
+                .phones(phoneNumber)
+                .address(address)
+                .personalEmail(emailPerso)
+                .professionalEmail(emailPro)
+                .cinNumber(cinNumber)
+                .role(role)
+                .numberOfChildren(child)
+                .hiringDate(eDate)
+                .departureDate(dDate)
+                .csp(csp)
+                .cnapsNumber(cnaps)
+                .build();
+
+        employeeService.createEmployee(employeeMapper.toDomain(employee));
+        phoneService.createPhoneNumberEmployee(phoneNumber,employeeService.getByEmailPro(emailPro));
         return "redirect:/index";
     }
-
     @GetMapping("/form")
     public String form(@ModelAttribute Employee employee, Model model){
         model.addAttribute("employee", new Employee());
@@ -144,9 +168,27 @@ public class EmployeeController extends TokenController {
             @RequestParam("cnaps") String cnaps,
             @RequestParam("phoneNumbers") String phoneNumbers,
             @RequestParam("cinNumber") String cinNumber) throws IOException {
-                byte[] fileData = file.getBytes();
-                employeeService.crupdateEmployee(matricule,name,lastName,birthDate,sex,csp,address,emailPro,emailPerso,role,child,eDate,dDate,cnaps,cinNumber,fileData);
-                phoneService.updatePhoneNumber(phoneNumbers,employeeService.getByMatricule(matricule));
+        byte[] fileData = file.getBytes();
+        EmployeeView employee = EmployeeView.builder()
+                .firstName(name)
+                .lastName(lastName)
+                .birthDate(birthDate)
+                .photo(fileData)
+                .gender(sex)
+                .phones(phoneNumbers)
+                .address(address)
+                .personalEmail(emailPerso)
+                .professionalEmail(emailPro)
+                .cinNumber(cinNumber)
+                .role(role)
+                .numberOfChildren(child)
+                .hiringDate(eDate)
+                .departureDate(dDate)
+                .csp(csp)
+                .cnapsNumber(cnaps)
+                .build();
+            employeeService.crupdateEmployee(employeeMapper.toDomain(employee));
+            phoneService.updatePhoneNumber(phoneNumbers,employeeService.getByMatricule(matricule));
         return "redirect:/index";
     }
 }

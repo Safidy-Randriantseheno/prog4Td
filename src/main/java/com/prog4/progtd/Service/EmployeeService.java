@@ -29,6 +29,9 @@ public class EmployeeService {
     @PersistenceContext
     private EntityManager entityManager;
     private final EmployeeRepository employeeRepository;
+    private final PhoneService phoneService;
+    private final String REGISTRATION_PREFIX = "EMP";
+
 
     public void exportToCsv(List<Employee> employees, PhoneService phoneService, HttpServletResponse response) throws IOException {
         String header = "First Name,Last Name,Birth Date,Matricule,Gender,Csp,Address,Email Professionel,Email Personnel,Fonction,Nombres dEnfants,Employement Date,Departure Date,Numéro Cnaps,Telephone,Numéro Cin\n";
@@ -84,12 +87,11 @@ public class EmployeeService {
             employees.addAll(employeeRepository.findByRoleContainingIgnoreCase(role));
         }
         if (startDate != null && endDate != null){
-            employees.addAll(employeeRepository.findEmployeesByDateRange(startDate,endDate));
+            employees.addAll(employeeRepository.findEmployeesByDate(startDate,endDate));
         }
         if (countryCode != null && !countryCode.isEmpty()){
             employees.addAll(employeeRepository.findEmployeesByCountryCode(countryCode));
         }
-
         if(employees.isEmpty()){
             return employeeRepository.findAll(sortEmployees(sort));
         }
@@ -112,43 +114,14 @@ public class EmployeeService {
         return Sort.by(Sort.Direction.ASC,"id");
     }
 
-    public Employee createEmployee(String firstName, String lastName, LocalDate birthDate, String sex, String csp, String address, String emailPro, String emailPerso, String role, Integer child, LocalDate eDate, LocalDate dDate, String cnaps, String cin, byte[] emplImg){
-        Employee employee = new Employee();
-        employee.setFirstName(firstName);
-        employee.setLastName(lastName);
-        employee.setBirthDate(birthDate);
+
+
+
+    public Employee createEmployee(Employee employee){
         employee.setMatricule(MatriculeGenerator.generateMatricule(employeeRepository.findAll().size() == 0 ? 0 : employeeRepository.findAll().size()));
-        employee.setEmplImg(emplImg);
-        employee.setSex(Employee.Sex.valueOf(sex));
-        employee.setCsp(Employee.Csp.valueOf(csp));
-        employee.setAddress(address);
-        employee.setEmailPro(emailPro);
-        employee.setEmailPerso(emailPerso);
-        employee.setRole(role);
-        employee.setChild(child);
-        employee.setEmployementDate(eDate);
-        employee.setDepartureDate(dDate);
-        employee.setCnaps(cnaps);
-        employee.setCin(cin);
         return employeeRepository.save(employee);
     };
-    public Employee crupdateEmployee(String matricule, String name, String lastName, LocalDate birthDate, String sex, String csp, String address, String emailPro, String emailPerso, String role, Integer child, LocalDate eDate, LocalDate dDate, String cnaps, String cin, byte[] image){
-        Employee employee = getByMatricule(matricule);
-        employee.setCnaps(cnaps);
-        employee.setFirstName(name);
-        employee.setLastName(lastName);
-        employee.setBirthDate(birthDate);
-        employee.setEmplImg(image);
-        employee.setSex(Employee.Sex.valueOf(sex));
-        employee.setCsp(Employee.Csp.valueOf(csp));
-        employee.setAddress(address);
-        employee.setEmailPro(emailPro);
-        employee.setEmailPerso(emailPerso);
-        employee.setRole(role);
-        employee.setChild(child);
-        employee.setEmployementDate(eDate);
-        employee.setDepartureDate(dDate);
-        employee.setCin(cin);
+    public Employee crupdateEmployee(Employee employee){
         return employeeRepository.save(employee);
         }
 }
